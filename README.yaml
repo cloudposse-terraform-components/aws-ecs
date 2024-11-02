@@ -1,70 +1,92 @@
-name: "template"
-
+name: "aws-ecs"
 # Canonical GitHub repo
-github_repo: "cloudposse-terraform-components/template"
-
+github_repo: "cloudposse-terraform-components/aws-ecs"
 # Short description of this project
 description: |-
-  Description of this component
+  This component is responsible for provisioning an ECS Cluster and associated load balancer.
 
-usage: |-
-  **Stack Level**: Regional or Test47
+  ## Usage
+
+  **Stack Level**: Regional
 
   Here's an example snippet for how to use this component.
-  
+
+  The following will create
+
+  - ecs cluster
+  - load balancer with an ACM cert placed on example.com
+  - r53 record on all \*.example.com which will point to the load balancer
+
   ```yaml
   components:
     terraform:
-      foo:
+      ecs:
+        settings:
+          spacelift:
+            workspace_enabled: true
         vars:
+          name: ecs
           enabled: true
+          acm_certificate_domain: example.com
+          route53_record_name: "*"
+          # Create records will be created in each zone
+          zone_names:
+            - example.com
+          capacity_providers_fargate: true
+          capacity_providers_fargate_spot: true
+          capacity_providers_ec2:
+            default:
+              instance_type: t3.medium
+              max_size: 2
+
+          alb_configuration:
+            public:
+              internal_enabled: false
+              # resolves to *.public-platform.<environment>.<stage>.<tenant>.<domain>.<tld>
+              route53_record_name: "*.public-platform"
+              additional_certs:
+                - "my-vanity-domain.com"
+            private:
+              internal_enabled: true
+              route53_record_name: "*.private-platform"
+              additional_certs:
+                - "my-vanity-domain.com"
   ```
 
+  <!-- prettier-ignore-start -->
+
+  <!-- prettier-ignore-end -->
+
+  ## References
+
+  - [cloudposse/terraform-aws-components](https://github.com/cloudposse/terraform-aws-components/tree/main/modules/ecs) -
+    Cloud Posse's upstream component
 include:
   - "docs/terraform.md"
-
 tags:
-  - terraform
-  - terraform-modules
-  - aws
-  - components
-  - terraform-components
-  - root
-  - geodesic
-  - reference-implementation
-  - reference-architecture
-
+  - component/ecs
+  - layer/ecs
+  - provider/aws
 # Categories of this project
 categories:
-  - terraform-modules/root
-  - terraform-components
-
+  - component/ecs
+  - layer/ecs
+  - provider/aws
 # License of this project
 license: "APACHE2"
-
 # Badges to display
 badges:
-  - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse-terraform-components/template.svg?style=for-the-badge"
-    url: "https://github.com/cloudposse-terraform-components/template/releases/latest"
-  - name: "Slack Community"
-    image: "https://slack.cloudposse.com/for-the-badge.svg"
-    url: "https://slack.cloudposse.com"
-
-references:
-  - name: "Cloud Posse Documentation"
-    description: "Complete documentation for the Cloud Posse solution"
-    url: "https://docs.cloudposse.com"
-  - name: "Reference Architectures"
-    description: "Launch effortlessly with our turnkey reference architectures, built either by your team or ours."
-    url: "https://cloudposse.com/"
-
+  - name: Latest Release
+    image: https://img.shields.io/github/release/cloudposse-terraform-components/aws-ecs.svg?style=for-the-badge
+    url: https://github.com/cloudposse-terraform-components/aws-ecs/releases/latest
+  - name: Slack Community
+    image: https://slack.cloudposse.com/for-the-badge.svg
+    url: https://slack.cloudposse.com
 related:
-- name: "Cloud Posse Terraform Modules"
-  description: Our collection of reusable Terraform modules used by our reference architectures.
-  url: "https://docs.cloudposse.com/modules/"
-- name: "Atmos"
-  description: "Atmos is like docker-compose but for your infrastructure"
-  url: "https://atmos.tools"
-
+  - name: "Cloud Posse Terraform Modules"
+    description: Our collection of reusable Terraform modules used by our reference architectures.
+    url: "https://docs.cloudposse.com/modules/"
+  - name: "Atmos"
+    description: "Atmos is like docker-compose but for your infrastructure"
+    url: "https://atmos.tools"
 contributors: [] # If included generates contribs
