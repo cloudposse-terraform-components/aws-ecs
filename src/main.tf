@@ -165,7 +165,7 @@ data "aws_acm_certificate" "default" {
 
 module "alb" {
   source  = "cloudposse/alb/aws"
-  version = "1.11.1"
+  version = "2.2.1"
 
   for_each = local.enabled ? var.alb_configuration : {}
 
