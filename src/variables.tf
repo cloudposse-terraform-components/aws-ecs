@@ -232,3 +232,9 @@ variable "capacity_providers_ec2" {
     error_message = "'FARGATE' and 'FARGATE_SPOT' name is reserved"
   }
 }
+
+variable "vpc_component_name" {
+  type        = string
+  description = "The name of a VPC component"
+  default     = "vpc"
+}
