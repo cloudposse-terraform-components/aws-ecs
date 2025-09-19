@@ -130,6 +130,7 @@ variable "capacity_providers_ec2" {
         delete_on_termination = bool
         encrypted             = bool
         iops                  = number
+        throughput            = number
         kms_key_id            = string
         snapshot_id           = string
         volume_size           = number
@@ -149,10 +150,12 @@ variable "capacity_providers_ec2" {
     instance_refresh = optional(object({
       strategy = string
       preferences = optional(object({
-        instance_warmup        = optional(number, null)
-        min_healthy_percentage = optional(number, null)
-        skip_matching          = optional(bool, null)
-        auto_rollback          = optional(bool, null)
+        instance_warmup              = optional(number, null)
+        min_healthy_percentage       = optional(number, null)
+        skip_matching                = optional(bool, null)
+        auto_rollback                = optional(bool, null)
+        scale_in_protected_instances = optional(string)
+        standby_instances            = optional(string)
       }), null)
       triggers = optional(list(string), [])
     }))
