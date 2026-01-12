@@ -165,7 +165,7 @@ data "aws_acm_certificate" "default" {
 
 module "alb" {
   source  = "cloudposse/alb/aws"
-  version = "1.12.0"
+  version = "2.4.0"
 
   for_each = local.enabled ? var.alb_configuration : {}
 
@@ -203,6 +203,15 @@ module "alb" {
 
   stickiness                        = lookup(each.value, "stickiness", null)
   cross_zone_load_balancing_enabled = lookup(each.value, "cross_zone_load_balancing_enabled", true)
+
+  # v2.x variables
+  client_keep_alive                  = lookup(each.value, "client_keep_alive", null)
+  https_ssl_policy                   = lookup(each.value, "https_ssl_policy", "ELBSecurityPolicy-TLS13-1-2-2021-06")
+  load_balancing_anomaly_mitigation  = lookup(each.value, "load_balancing_anomaly_mitigation", null)
+  http_ingress_security_group_ids    = lookup(each.value, "http_ingress_security_group_ids", [])
+  https_ingress_security_group_ids   = lookup(each.value, "https_ingress_security_group_ids", [])
+  capacity_reservation_specification = lookup(each.value, "capacity_reservation_specification", null)
+  enable_waf_fail_open               = lookup(each.value, "enable_waf_fail_open", false)
 
   target_group_name        = join(module.target_group_label.delimiter, [module.target_group_label.id, each.key])
   target_group_port        = lookup(each.value, "target_group_port", 80)

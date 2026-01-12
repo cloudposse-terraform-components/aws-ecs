@@ -8,6 +8,7 @@ tags:
 # Component: `ecs`
 
 This component is responsible for provisioning an ECS Cluster and associated load balancer.
+
 ## Usage
 
 **Stack Level**: Regional
@@ -56,11 +57,7 @@ components:
               - "my-vanity-domain.com"
 ```
 
-<!-- prettier-ignore-start -->
-<!-- prettier-ignore-end -->
-
-
-<!-- markdownlint-disable -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -78,7 +75,7 @@ components:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alb"></a> [alb](#module\_alb) | cloudposse/alb/aws | 1.12.0 |
+| <a name="module_alb"></a> [alb](#module\_alb) | cloudposse/alb/aws | 2.4.0 |
 | <a name="module_cluster"></a> [cluster](#module\_cluster) | cloudposse/ecs-cluster/aws | 2.0.0 |
 | <a name="module_dns_delegated"></a> [dns\_delegated](#module\_dns\_delegated) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
 | <a name="module_iam_roles"></a> [iam\_roles](#module\_iam\_roles) | ../account-map/modules/iam-roles | n/a |
@@ -154,17 +151,4 @@ components:
 | <a name="output_records"></a> [records](#output\_records) | Record names |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Security group id |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | VPC ID |
-<!-- markdownlint-restore -->
-
-
-
-## References
-
-
-- [cloudposse-terraform-components](https://github.com/orgs/cloudposse-terraform-components/repositories) - Cloud Posse's upstream component
-
-
-
-
-[<img src="https://cloudposse.com/logo-300x69.svg" height="32" align="right"/>](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-terraform-components/aws-ecs&utm_content=)
-
+<!-- END_TF_DOCS -->
