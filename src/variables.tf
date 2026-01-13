@@ -57,10 +57,14 @@ variable "maintenance_page_path" {
   description = "The path from this directory to the text/html page to use as the maintenance page. Must be within 1024 characters"
 }
 
-variable "container_insights_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether or not to enable container insights"
+variable "container_insights_mode" {
+  description = "Container insights mode. Valid values: 'enhanced', 'enabled', 'disabled'. NOTE: `enhanced` is more costly, but as described by AWS, it 'provides detailed health and performance metrics at task and container level in addition to aggregated metrics at cluster and service level. Enables easier drill downs for faster problem isolation and troubleshooting.' (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)"
+  type        = string
+  default     = "enabled"
+  validation {
+    condition     = contains(["enhanced", "enabled", "disabled"], var.container_insights_mode)
+    error_message = "The 'container_insights_mode' value must be one of 'enhanced', 'enabled', 'disabled'"
+  }
 }
 
 variable "dns_delegated_stage_name" {
