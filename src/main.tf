@@ -73,7 +73,7 @@ module "cluster" {
 
   context = module.this.context
 
-  container_insights_enabled      = var.container_insights_enabled
+  container_insights_mode         = var.container_insights_mode
   capacity_providers_fargate      = var.capacity_providers_fargate
   capacity_providers_fargate_spot = var.capacity_providers_fargate_spot
   capacity_providers_ec2 = {
