@@ -206,7 +206,7 @@ module "alb" {
 
   # v2.x variables
   client_keep_alive                 = lookup(each.value, "client_keep_alive", null)
-  https_ssl_policy                  = lookup(each.value, "https_ssl_policy", "ELBSecurityPolicy-TLS13-1-2-2021-06")
+  https_ssl_policy                  = lookup(each.value, "https_ssl_policy", "ELBSecurityPolicy-TLS13-1-3-2021-06")
   load_balancing_anomaly_mitigation = lookup(each.value, "load_balancing_anomaly_mitigation", null)
   http_ingress_security_group_ids   = lookup(each.value, "http_ingress_security_group_ids", [])
   https_ingress_security_group_ids  = lookup(each.value, "https_ingress_security_group_ids", [])
