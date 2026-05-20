@@ -119,9 +119,25 @@ variable "egress_rules" {
   }
   description = <<-EOT
     Map of egress rules to apply to the ECS cluster security group (used by EC2 capacity providers).
+    Each rule must specify exactly one destination: a CIDR list (`cidr_blocks` and/or `ipv6_cidr_blocks`),
+    a `prefix_list_ids` list, a `source_security_group_id`, or `self = true`.
     Defaults to allowing all outbound TCP traffic to `0.0.0.0/0`, preserving prior behavior.
     Set to `{}` to create no egress rules.
   EOT
+
+  validation {
+    condition = alltrue([
+      for k, rule in var.egress_rules : length([
+        for target in [
+          (rule.cidr_blocks != null && length(rule.cidr_blocks) > 0) || (rule.ipv6_cidr_blocks != null && length(rule.ipv6_cidr_blocks) > 0),
+          rule.prefix_list_ids != null && length(rule.prefix_list_ids) > 0,
+          rule.source_security_group_id != null,
+          rule.self == true,
+        ] : target if target
+      ]) == 1
+    ])
+    error_message = "Each egress_rules entry must specify exactly one destination: cidr_blocks/ipv6_cidr_blocks, prefix_list_ids, source_security_group_id, or self = true."
+  }
 }
 
 variable "capacity_providers_fargate" {
