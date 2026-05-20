@@ -97,6 +97,33 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks to be allowed to connect to the ECS cluster"
 }
 
+variable "egress_rules" {
+  type = map(object({
+    description              = optional(string)
+    from_port                = number
+    to_port                  = number
+    protocol                 = string
+    cidr_blocks              = optional(list(string))
+    ipv6_cidr_blocks         = optional(list(string))
+    prefix_list_ids          = optional(list(string))
+    source_security_group_id = optional(string)
+    self                     = optional(bool)
+  }))
+  default = {
+    default = {
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+  description = <<-EOT
+    Map of egress rules to apply to the ECS cluster security group (used by EC2 capacity providers).
+    Defaults to allowing all outbound TCP traffic to `0.0.0.0/0`, preserving prior behavior.
+    Set to `{}` to create no egress rules.
+  EOT
+}
+
 variable "capacity_providers_fargate" {
   description = "Use FARGATE capacity provider"
   type        = bool
