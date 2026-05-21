@@ -57,14 +57,25 @@ resource "aws_security_group_rule" "ingress_security_groups" {
   security_group_id        = join("", aws_security_group.default[*].id)
 }
 
+moved {
+  from = aws_security_group_rule.egress[0]
+  to   = aws_security_group_rule.egress["default"]
+}
+
 resource "aws_security_group_rule" "egress" {
-  count             = local.enabled ? 1 : 0
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.default[*].id)
+  for_each = local.enabled ? var.egress_rules : {}
+
+  type                     = "egress"
+  description              = each.value.description
+  from_port                = each.value.from_port
+  to_port                  = each.value.to_port
+  protocol                 = each.value.protocol
+  cidr_blocks              = each.value.cidr_blocks
+  ipv6_cidr_blocks         = each.value.ipv6_cidr_blocks
+  prefix_list_ids          = each.value.prefix_list_ids
+  source_security_group_id = each.value.source_security_group_id
+  self                     = each.value.self
+  security_group_id        = join("", aws_security_group.default[*].id)
 }
 
 module "cluster" {

@@ -97,6 +97,49 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks to be allowed to connect to the ECS cluster"
 }
 
+variable "egress_rules" {
+  type = map(object({
+    description              = optional(string)
+    from_port                = number
+    to_port                  = number
+    protocol                 = string
+    cidr_blocks              = optional(list(string))
+    ipv6_cidr_blocks         = optional(list(string))
+    prefix_list_ids          = optional(list(string))
+    source_security_group_id = optional(string)
+    self                     = optional(bool)
+  }))
+  default = {
+    default = {
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+  description = <<-EOT
+    Map of egress rules to apply to the ECS cluster security group (used by EC2 capacity providers).
+    Each rule must specify exactly one destination: a CIDR list (`cidr_blocks` and/or `ipv6_cidr_blocks`),
+    a `prefix_list_ids` list, a `source_security_group_id`, or `self = true`.
+    Defaults to allowing all outbound TCP traffic to `0.0.0.0/0`, preserving prior behavior.
+    Set to `{}` to create no egress rules.
+  EOT
+
+  validation {
+    condition = alltrue([
+      for k, rule in var.egress_rules : length([
+        for target in [
+          (rule.cidr_blocks != null && length(rule.cidr_blocks) > 0) || (rule.ipv6_cidr_blocks != null && length(rule.ipv6_cidr_blocks) > 0),
+          rule.prefix_list_ids != null && length(rule.prefix_list_ids) > 0,
+          rule.source_security_group_id != null,
+          rule.self == true,
+        ] : target if target
+      ]) == 1
+    ])
+    error_message = "Each egress_rules entry must specify exactly one destination: cidr_blocks/ipv6_cidr_blocks, prefix_list_ids, source_security_group_id, or self = true."
+  }
+}
+
 variable "capacity_providers_fargate" {
   description = "Use FARGATE capacity provider"
   type        = bool
