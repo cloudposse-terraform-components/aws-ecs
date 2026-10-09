@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "egress" {
 
 module "cluster" {
   source  = "cloudposse/ecs-cluster/aws"
-  version = "2.0.0"
+  version = "2.0.1"
 
   context = module.this.context
 
